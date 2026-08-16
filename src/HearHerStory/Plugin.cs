@@ -17,7 +17,7 @@
 using System;
 using MelonLoader;
 
-[assembly: MelonInfo(typeof(HearHerStory.Plugin), "Hear Her Story", "0.4.0", "amock")]
+[assembly: MelonInfo(typeof(HearHerStory.Plugin), "Hear Her Story", "0.4.2", "amock")]
 [assembly: MelonGame("Sam Barlow", "HerStory")]
 
 namespace HearHerStory
@@ -48,7 +48,7 @@ namespace HearHerStory
         public override void OnInitializeMelon()
         {
             Log = LoggerInstance;
-            Log.Msg("Hear Her Story 0.4.0 starting.");
+            Log.Msg("Hear Her Story 0.4.2 starting.");
 
             bool speechReady = Speech.Initialize(Log);
 

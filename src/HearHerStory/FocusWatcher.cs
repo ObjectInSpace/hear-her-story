@@ -902,7 +902,55 @@ namespace HearHerStory
                 _log.Msg("[activate] " + Labeller.Name(current) + " via synthetic click");
             }
 
+            // A control that carries state — the settings toggles — is activated
+            // here rather than through the Button path above, because a Unity
+            // Toggle is a Selectable with no Button on it. Its state is read
+            // before and after so the change can be spoken.
+            string stateBefore = Labeller.State(current);
+
             ClickAt(current);
+
+            AnnounceStateChange(current, stateBefore);
+        }
+
+        /// <summary>
+        /// Says a control's new state when activating it changed one.
+        ///
+        /// Focus does not move when a toggle is flipped, so nothing else ever
+        /// speaks again: <see cref="Update"/> compares the selection against
+        /// <see cref="_lastSpoken"/>, finds it unchanged, and returns. The state
+        /// was correct the moment the player arrived and then silently went
+        /// stale — pressing the subtitles toggle produced no output at all, which
+        /// is indistinguishable from a key that did nothing. So the setting could
+        /// only be read by leaving the control and coming back to it.
+        ///
+        /// Only the state is spoken, not the whole label. The player just pressed
+        /// this control and knows what it is; repeating its name and position on
+        /// every press is noise around the one word they are waiting for.
+        ///
+        /// Silent when nothing changed, which is the common case: most of this
+        /// game's controls are buttons with no state at all, and <see
+        /// cref="Labeller.State"/> returns empty for those.
+        /// </summary>
+        private void AnnounceStateChange(GameObject go, string before)
+        {
+            string after = Labeller.State(go);
+
+            if (string.IsNullOrEmpty(after) || after == before)
+            {
+                return;
+            }
+
+            // Forced past duplicate suppression: flipping a toggle off and on
+            // again is two deliberate presses, and the second must be heard even
+            // though it says the same word as the one before last.
+            Speech.Say(Labeller.Name(go) + ", " + after, HhsTextType.Focus, true);
+
+            // The watcher would otherwise say nothing more about this object,
+            // but re-baseline anyway so a later forced re-announcement is not
+            // suppressed as a repeat of a stale label.
+            _lastSpoken = go;
+            _pendingSelection = go;
         }
 
         /// <summary>
@@ -1468,6 +1516,14 @@ namespace HearHerStory
         /// ISubmitHandler, which a bare MonoBehaviour wired through an
         /// EventTrigger does not implement. The pointer sequence — down, up,
         /// click — is what the scene's own wiring expects.
+        ///
+        /// Submit is a fallback rather than a second shot, and that distinction
+        /// matters for anything that toggles. Unity's own Toggle implements both
+        /// IPointerClickHandler and ISubmitHandler, and both call InternalToggle,
+        /// which flips isOn — so firing the two unconditionally turned the
+        /// settings toggles on and straight back off within one keypress. The
+        /// control ended up exactly where it started, which is why pressing it
+        /// appeared to do nothing at all.
         /// </summary>
         private static void ClickAt(GameObject go)
         {
@@ -1488,12 +1544,17 @@ namespace HearHerStory
             {
                 ExecuteEvents.Execute(go, data, ExecuteEvents.pointerDownHandler);
                 ExecuteEvents.Execute(go, data, ExecuteEvents.pointerUpHandler);
-                ExecuteEvents.Execute(go, data, ExecuteEvents.pointerClickHandler);
 
-                // Submit as well, for anything that listens for it instead. Both
-                // firing is harmless: an element implements one or the other,
-                // not usually both.
-                ExecuteEvents.Execute(go, data, ExecuteEvents.submitHandler);
+                // Execute reports whether a handler actually took the event, so
+                // the fallback can be conditional rather than a guess about what
+                // this particular element implements.
+                bool clicked = ExecuteEvents.Execute(
+                    go, data, ExecuteEvents.pointerClickHandler);
+
+                if (!clicked)
+                {
+                    ExecuteEvents.Execute(go, data, ExecuteEvents.submitHandler);
+                }
             }
             catch (Exception ex)
             {
