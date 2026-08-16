@@ -1,0 +1,24 @@
+# Build output
+bin/
+obj/
+
+# Game and engine assemblies referenced locally by the build.
+# These are copyrighted binaries owned by the game/engine vendors and are
+# not ours to redistribute. Populate lib/ from a local game install.
+lib/
+
+# Vendored upstream clones (~196 MB, each with its own .git).
+# Re-clone from source rather than tracking them here.
+upstream-reports/repos/
+
+# Loader binaries: originals copied from a MelonLoader install plus the
+# patched outputs produced by loader-patch/PatchLoader.
+loader-patch/*.dll
+
+# Stale BepInEx-layout staging tree; the mod ships as a MelonLoader mod.
+dist/
+
+# Local editor/tooling state
+.claude/settings.local.json
+.vs/
+*.user

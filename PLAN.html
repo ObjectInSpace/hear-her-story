@@ -1,0 +1,448 @@
+<title>Hear Her Story</title>
+<style>
+  :root{
+    --bg:#EDE9E0;
+    --surface:#F6F3EC;
+    --ink:#1C1F24;
+    --ink-soft:#54585F;
+    --ink-faint:#83878E;
+    --rule:#D2CCBE;
+    --accent:#B4472B;
+    --accent-soft:#F0DED6;
+    --teal:#3D6B72;
+    --code-bg:#E4DFD4;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#14171A;
+      --surface:#1B1F23;
+      --ink:#E6E2D9;
+      --ink-soft:#A8ACB2;
+      --ink-faint:#7C8087;
+      --rule:#2E343A;
+      --accent:#E4785A;
+      --accent-soft:#33211C;
+      --teal:#7FB3B8;
+      --code-bg:#22272C;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#14171A;
+    --surface:#1B1F23;
+    --ink:#E6E2D9;
+    --ink-soft:#A8ACB2;
+    --ink-faint:#7C8087;
+    --rule:#2E343A;
+    --accent:#E4785A;
+    --accent-soft:#33211C;
+    --teal:#7FB3B8;
+    --code-bg:#22272C;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    margin:0;
+    padding:0 1.5rem 6rem;
+  }
+  .wrap{max-width:69ch;margin:0 auto}
+  code,.mono{
+    font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    font-size:.875em;
+  }
+  code{background:var(--code-bg);padding:.12em .38em;border-radius:2px;word-break:break-word}
+
+  header{padding:4.5rem 0 2.25rem;border-bottom:2px solid var(--ink)}
+  .eyebrow{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--accent);margin:0 0 1.1rem;
+  }
+  h1{
+    font-family:Georgia,"Iowan Old Style","Times New Roman",serif;
+    font-weight:600;font-size:clamp(2.3rem,6vw,3.1rem);line-height:1.08;
+    letter-spacing:-.015em;margin:0;text-wrap:balance;
+  }
+  .standfirst{
+    font-family:Georgia,"Iowan Old Style",serif;
+    font-size:1.12rem;line-height:1.6;color:var(--ink-soft);
+    margin:1.1rem 0 0;text-wrap:pretty;
+  }
+  .meta{
+    display:flex;flex-wrap:wrap;gap:.5rem 1.4rem;margin:1.9rem 0 0;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:.74rem;letter-spacing:.04em;color:var(--ink-faint);
+  }
+  .meta b{color:var(--ink-soft);font-weight:600}
+
+  h2{
+    font-family:Georgia,"Iowan Old Style",serif;
+    font-weight:600;font-size:1.62rem;line-height:1.2;letter-spacing:-.01em;
+    margin:0;text-wrap:balance;
+  }
+  h3{
+    font-size:.95rem;font-weight:700;letter-spacing:.01em;
+    margin:2rem 0 .5rem;
+  }
+  p{margin:0 0 1rem;text-wrap:pretty}
+  section{padding:3.2rem 0 0}
+  section+section{border-top:1px solid var(--rule);margin-top:3.2rem}
+
+  .phase{display:flex;gap:1.1rem;align-items:baseline}
+  .num{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:.82rem;font-weight:700;color:var(--teal);
+    letter-spacing:.06em;flex:none;padding-top:.35rem;
+  }
+  .goal{
+    font-size:.93rem;color:var(--ink-soft);margin:.55rem 0 1.35rem;
+    padding-left:calc(1.1rem + 3.4ch);
+  }
+  .body{padding-left:calc(1.1rem + 3.4ch)}
+  @media(max-width:560px){
+    .goal,.body{padding-left:0}
+  }
+
+  .finding{
+    background:var(--surface);
+    border:1px solid var(--rule);
+    border-left:3px solid var(--accent);
+    padding:1.4rem 1.5rem;margin:0 0 1.4rem;border-radius:2px;
+  }
+  .finding h3{margin-top:0}
+  .finding p:last-child{margin-bottom:0}
+  .tag{
+    display:inline-block;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--accent);background:var(--accent-soft);
+    padding:.2rem .5rem;border-radius:2px;margin:0 0 .7rem;
+  }
+
+  ul{margin:0 0 1rem;padding-left:1.15rem}
+  li{margin:0 0 .45rem;text-wrap:pretty}
+  li::marker{color:var(--ink-faint)}
+
+  .tablewrap{overflow-x:auto;margin:0 0 1.2rem}
+  table{border-collapse:collapse;width:100%;font-size:.86rem;min-width:34rem}
+  th,td{text-align:left;padding:.6rem .8rem .6rem 0;border-bottom:1px solid var(--rule);vertical-align:top}
+  th{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:.68rem;letter-spacing:.11em;text-transform:uppercase;
+    color:var(--ink-faint);font-weight:600;border-bottom-color:var(--ink-soft);
+  }
+  td:first-child{white-space:nowrap;padding-right:1.4rem}
+
+  .keys{margin:0 0 1.2rem}
+  .keyrow{
+    display:flex;gap:1rem;align-items:baseline;
+    padding:.5rem 0;border-bottom:1px solid var(--rule);
+  }
+  .keyrow:last-child{border-bottom:0}
+  kbd{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:.76rem;background:var(--code-bg);border:1px solid var(--rule);
+    border-bottom-width:2px;border-radius:3px;padding:.2rem .45rem;
+    flex:none;min-width:7.5rem;text-align:center;color:var(--ink);
+  }
+  .keyrow span{font-size:.9rem;color:var(--ink-soft)}
+
+  .risk{display:grid;gap:1.1rem;margin:0 0 1rem}
+  .risk div{border-left:2px solid var(--rule);padding-left:1rem}
+  .risk b{display:block;font-size:.93rem;margin-bottom:.2rem}
+  .risk p{font-size:.9rem;color:var(--ink-soft);margin:0}
+
+  footer{
+    margin-top:3.2rem;padding-top:1.6rem;border-top:1px solid var(--rule);
+    font-size:.83rem;color:var(--ink-faint);
+  }
+</style>
+
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Implementation plan</p>
+  <h1>Hear Her Story</h1>
+  <p class="standfirst">A screen-reader accessibility mod for Sam Barlow's <em>Her Story</em> — turning a game about searching a police video archive into one that can be played entirely by ear.</p>
+  <div class="meta">
+    <span><b>Target</b> Unity 5.0.1f1 · Mono · x86</span>
+    <span><b>Loader</b> MelonLoader 0.7.3</span>
+    <span><b>Speech</b> UnityAccessibilityLib</span>
+  </div>
+</header>
+
+<section>
+  <h2>What the game is, mechanically</h2>
+  <p>The player types search terms into a mock 1994 police database. The search matches transcripts of 271 short video clips — interview footage of one woman — and returns the first five matches as thumbnails. You watch clips, learn names and details, and use those to search again. There is no win condition; you stop when you understand what happened.</p>
+  <p>Almost everything that matters is <em>already verbal</em>: the clips are a woman talking, and the search is text. The visual layer is a skeuomorphic desktop wrapped around it. That makes this game unusually well-suited to a screen-reader mod — the gap is narrower than it first appears.</p>
+  <ul>
+    <li>Search results are <strong>thumbnail images</strong> with no accessible label, so you cannot tell what you found or pick a clip.</li>
+    <li>Result counts, the query cap, and system messages are drawn as on-screen text that is never spoken.</li>
+    <li>Nothing is ever <strong>announced</strong> — not focus changes, not state changes, not the outcome of a search.</li>
+  </ul>
+  <p>Note what is <em>not</em> on that list: keyboard navigation. An earlier draft of this plan claimed the game was mouse-only with no focus model to hook into. That was wrong, and the correction reshaped the project — see below.</p>
+</section>
+
+<section>
+  <h2>Findings from decompilation</h2>
+  <p>I decompiled the game's assemblies with <code>ilspycmd</code> and scanned the asset bundles directly. Three findings shape the whole design.</p>
+
+  <div class="finding">
+    <p class="tag">Decisive</p>
+    <h3>The game already ships complete timed captions</h3>
+    <p>The clip database is a TextAsset CSV inside <code>sharedassets1.assets</code> — <strong>271 rows × 15 columns</strong>, parsed in <code>NewUIDatabase.Awake()</code>. Column 5 holds a plain transcript; <strong>column 9 holds timed subtitles</strong> as a <code>%</code>-delimited alternating text/seconds array. <code>ClipDetail.Update()</code> already walks it during playback.</p>
+    <p>This eliminates what would otherwise be the largest task in the project: no transcription, no alignment, no external caption files. Every spoken word already exists as timed text that the mod can read and speak. It also means search-result <em>previews</em> can quote the real transcript.</p>
+  </div>
+
+  <div class="finding">
+    <p class="tag">Confirmed</p>
+    <h3>UnityAccessibilityLib fits this game exactly</h3>
+    <p>The library ships a <strong>net35 build</strong> — the oldest of its three targets, and the one that matches this game's .NET 3.5-era Mono runtime. That is the compatibility question that decides the whole project, and it lands in our favour.</p>
+    <p>It also resolves the architecture question. Its speech backend, <code>UniversalSpeech.dll</code>, must be 32-bit; <code>HerStory.exe</code> and its AVPro video plugin are both <strong>32-bit x86</strong>. No bitness mismatch.</p>
+    <p>What it gives us beyond raw speech: duplicate suppression, a repeat buffer, braille output alongside speech, rich-text stripping with custom replacement hooks, and a text-type system with a <code>CustomBase</code> for our own categories. It carries its own SAPI fallback when no screen reader is running. It is framework-agnostic — we supply an <code>IAccessibilityLogger</code> and it plugs into whichever loader we choose.</p>
+  </div>
+
+  <div class="finding">
+    <p class="tag">Corrected</p>
+    <h3>A focus model already exists — we were looking in the wrong assembly</h3>
+    <p>I first concluded the game had no keyboard or controller handling, because <code>Assembly-UnityScript.dll</code> contains only four input calls: mouse down/up for dragging icons, <code>GetKey</code> for Enter in the search box, and <code>GetKeyUp</code> for Escape. That conclusion was wrong. Typing into the search box plainly works, so something was handling the keyboard — and it wasn't the game's own code.</p>
+    <p>It is <code>UnityEngine.UI.dll</code>. <code>InputField.OnUpdateSelected</code> drains Unity's event queue with <code>Event.PopEvent</code> and feeds each key to <code>KeyPressed</code>. That method is an <strong><code>EventSystem</code> callback</strong>, fired only for the currently-selected object — so a live <code>EventSystem</code> with a working input module is already running. Typing is the proof.</p>
+    <p>The shipped UI assembly also contains a complete, functional <code>StandaloneInputModule</code>: it reads the <code>Horizontal</code>/<code>Vertical</code> axes and <code>Submit</code>/<code>Cancel</code> buttons and dispatches <code>moveHandler</code>, <code>submitHandler</code>, and <code>cancelHandler</code> events. <code>Selectable</code> carries the matching navigation system — <code>FindSelectableOnRight/Down/Left/Up</code>, an automatic mode that finds neighbours geometrically, and a static <code>allSelectables</code> registry. Unity binds those axes to arrow keys <em>and</em> gamepad sticks by default.</p>
+    <p>In other words: the focus model we planned to build from scratch is largely already present. What is missing is that nothing is ever spoken.</p>
+  </div>
+
+  <div class="finding">
+    <p class="tag">Open</p>
+    <h3>Three questions that static analysis cannot settle</h3>
+    <p>What remains unknown is how much of that machinery this particular game actually uses. Serialized scenes store components by numeric class ID, and the type tables list every type a build <em>references</em>, not what it instantiates — so reading the asset files cannot answer:</p>
+    <ul>
+      <li>Are the <code>Selectable</code>s navigable, or is <code>navigation.mode</code> set to <code>None</code>?</li>
+      <li>Is <code>firstSelectedGameObject</code> set, so focus starts somewhere sensible on each screen?</li>
+      <li>Do the runtime-instantiated result thumbnails — created in <code>PopulateDatabaseList()</code> — participate in navigation at all? These were almost certainly only ever wired for mouse clicks.</li>
+    </ul>
+    <p>These decide the size of Phase 02, so Phase 01 answers them at runtime rather than guessing. The likely finding is that automatic navigation is on (it is Unity's default) and the gap is confined to the dynamic thumbnails.</p>
+  </div>
+
+  <div class="finding">
+    <p class="tag">Orientation</p>
+    <h3>The game logic is in UnityScript, not C#</h3>
+    <p><code>Assembly-CSharp.dll</code> is a decoy — it contains only AVPro video-plugin demos and Unity UI samples. The real game lives in <code>Assembly-UnityScript.dll</code>, where classes are compiled UnityScript with <code>public virtual</code> methods. Harmony patches them normally, with one caveat: <code>RunQuery()</code> is a compiled coroutine state machine (<code>$RunQuery$139</code>), so it must be patched at its entry and exit points rather than internally.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Why not an accessibility tree</h2>
+  <p>The natural instinct for focus management is a library like <strong>AccessKit</strong> — describe the UI as a tree of nodes with roles and properties, and publish it to the platform's native accessibility API so a screen reader can explore it like a native app. That is the right architecture when building a UI toolkit from scratch. It is the wrong one here.</p>
+  <p>It is Rust-first with C bindings, so targeting .NET 3.5 Mono means hand-rolling a P/Invoke layer over a large API. Its value is publishing a tree you own — but our tree already exists as Unity <code>Selectable</code>s that the game itself drives, so we would be mirroring state and keeping two models in sync. And a screen reader cannot run its usual virtual cursor over a game window regardless, so most of what that costs would go unused.</p>
+  <p>The simpler model wins: let Unity own focus, and speak on transition. That is what UnityAccessibilityLib is shaped for, and what game accessibility mods generally do.</p>
+</section>
+
+<section>
+  <h2>Choosing the loader</h2>
+  <div class="finding">
+    <p class="tag">Superseded</p>
+    <h3>The mod ships on MelonLoader, not BepInEx</h3>
+    <p>The original reasoning below chose BepInEx 5 on packaging grounds, treating the two loaders as technically interchangeable. <strong>BepInEx was tried first and crashed the game</strong>, so the mod runs on MelonLoader 0.7.3 instead; everything from Phase 01 onward was built and verified against it. Where this section and the code disagree, the code is right.</p>
+    <p>The crash was not diagnosed to root cause — the loader was swapped rather than debugged, which was the right call under time pressure but leaves an unanswered question. The remnants of that attempt are still in <code>dist/</code> (a full <code>BepInEx/</code> tree and a Doorstop <code>winhttp.dll</code>) should anyone want to revisit it.</p>
+    <p><strong>Neither loader worked out of the box.</strong> BepInEx crashed the game outright; MelonLoader started the game fine but silently failed to load the mod, which is the harder failure to diagnose of the two. MelonLoader was chosen because that second failure could at least be traced.</p>
+    <p>The root cause is configuration, and it is two bugs stacked. MelonLoader's preferences system depends on Tomlet, whose net35 build fails at type-initialization on Unity 5.0.1's Mono — it cannot resolve a method carrying an <code>unmanaged</code> generic constraint through reflection. That failure is then <em>swallowed</em>, because <code>MelonBase.Register()</code> calls <code>RegisterCallbacks()</code> — which subscribes to the preferences events — outside the error handling that guards the initialization call three lines below it. The mod's assembly loaded, its constructors ran, and <code>OnInitializeMelon</code> was simply never invoked, with nothing logged anywhere: no error in <code>Latest.log</code>, the console, or the Unity player log.</p>
+    <p>Both problems are fixed in locally patched builds of MelonLoader and Tomlet, and both fixes are written up as upstream reports in <code>upstream-reports/</code>. The Tomlet fix is fully verified — all targets build, 164/164 tests pass, confirmed working on the affected runtime.</p>
+    <p>The plan's claim that reversing the loader choice would cost about a day proved roughly right in code terms — the entry point and <code>IAccessibilityLogger</code> are the only loader-specific pieces — but it did not price in debugging a silent failure in the loader itself.</p>
+  </div>
+
+  <p>The original reasoning, retained because it still describes the packaging trade-off correctly:</p>
+  <p>BepInEx 5 and MelonLoader are technically interchangeable here. Both support Mono games of this vintage, both bundle Harmony, both have a documented adapter for the accessibility library, and the mod code is identical under either. With no technical difference to decide on, packaging decides it: BepInEx 5 (x86 Mono, matching the 32-bit game).</p>
+  <p>BepInEx installs by extraction, so the entire mod ships as <strong>one archive with the final layout already in it</strong>. The player extracts once into the game folder and is done. There is no separate loader installer to run first, no "install X, then install this" sequence, and no version coupling between loader and mod to keep in step across releases.</p>
+  <p>That is worth more than it sounds for this particular audience. A single extract-and-play step is the most reliable install to describe in a readme and to follow with a screen reader, and it makes the whole distribution testable by unzipping into a clean copy of the game.</p>
+  <p><strong>That packaging argument survives the switch intact</strong>, though by a different route than it was originally made. Patching the loader means shipping the loader, which means its installer is never run — so the mod bundles the whole layout and the player still extracts once. See <em>Scope</em> below.</p>
+  <p>What the switch does add is a maintenance obligation: shipping modified MelonLoader and Tomlet binaries means re-patching against future releases until the upstream fixes land, and carrying the attribution that Apache 2.0 and MIT require. That is a real cost, but it is a cost of patching, not of packaging.</p>
+</section>
+
+<section>
+  <h2>Architecture</h2>
+  <p>A single MelonLoader mod, patching the game with Harmony and speaking through UnityAccessibilityLib. No game files are modified — the mod is a drop-in, and deleting it restores the stock game. This matters for a game distributed on Steam and GOG, where patched assemblies would trip file-integrity checks.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Component</th><th>Responsibility</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">Speech</td><td>Thin layer over the library's <code>SpeechManager</code> — it already handles duplicate suppression, repeat, and braille. We add only an interrupt-versus-append policy, so a keypress cuts off the previous utterance but captions never truncate each other.</td></tr>
+        <tr><td class="mono">FocusWatcher</td><td>Observes <code>EventSystem.current.currentSelectedGameObject</code> and speaks on change. Owns no cursor — Unity keeps driving selection. Where the game's own navigation has gaps, this repairs them by setting <code>navigation.mode</code> and neighbour links on the offending <code>Selectable</code>s.</td></tr>
+        <tr><td class="mono">Labeller</td><td>Turns a focused <code>GameObject</code> into a spoken label: role, name, state, and position in its group. This is the real work of Phase 02 — the game's elements carry no accessible names, only sprites and layout.</td></tr>
+        <tr><td class="mono">ClipLibrary</td><td>Reads <code>dataUID</code> once at startup; exposes transcript, duration, watched-state, and timed captions per clip.</td></tr>
+        <tr><td class="mono">Narrator</td><td>Composes what gets spoken — result summaries, clip descriptions, captions — in one place, so phrasing stays consistent and tunable.</td></tr>
+        <tr><td class="mono">Patches</td><td>Harmony hooks that feed the above from game events.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>Build sequence</h2>
+  <p>Five phases, each genuinely dependent on the one before it, and each independently testable in-game.</p>
+
+  <div class="phase"><span class="num">01</span><h2>Speech, and a survey of what's there</h2></div>
+  <p class="goal">Goal: the game speaks — and we learn exactly how much navigation already works.</p>
+  <div class="body">
+    <p>Install the loader, reference <code>UnityAccessibilityLib</code>'s net35 build, drop the 32-bit <code>UniversalSpeech.dll</code> in the game root, and implement <code>IAccessibilityLogger</code> against the loader's logger. Prove the pipeline by announcing the main menu on load.</p>
+    <p>The same build carries a diagnostic that answers the open questions above. On each screen it dumps: the active input module's type, <code>firstSelectedGameObject</code> and <code>currentSelectedGameObject</code>, and for every entry in <code>Selectable.allSelectables</code> its name, <code>IsInteractable()</code>, and <code>navigation.mode</code>. A key that walks selection manually confirms whether <code>moveHandler</code> events actually route.</p>
+    <p>The controller is worth querying here as a second input surface — not as a feature to build, but as evidence. Unity binds <code>Horizontal</code>/<code>Vertical</code> and <code>Submit</code>/<code>Cancel</code> to gamepad inputs by default, so a connected pad already feeds the same event path. Logging live axis values and button states alongside the keyboard costs nothing extra and tests the module more sharply: arrow keys and sticks share the axes, but gamepad <code>Submit</code> is a separate binding from Enter, so seeing both confirms the module is processing the full input set rather than something else intercepting keystrokes.</p>
+    <p>Pairing these is deliberate: the survey needs a running game, and speech needs validating in one anyway. One session settles both — whether the loader works on a 2015 Unity build, whether the native speech library loads, and how much of Phase 02 is repair rather than construction.</p>
+  </div>
+
+  <div class="phase"><span class="num">02</span><h2>Focus and labels</h2></div>
+  <p class="goal">Goal: moving around any screen tells you where you are.</p>
+  <div class="body">
+    <p>Scope here is set by what Phase 01 finds, and splits in two.</p>
+    <p><strong>Labelling</strong> is required regardless, and is the bulk of the work. Every focusable element needs a spoken identity — role, name, current state, and position within its group ("result 2 of 5"). The game's UI carries none of this: elements are sprites with layout positions, and the result thumbnails are literally just images. Labels come from the game's own data via <code>ClipLibrary</code> wherever possible, rather than hardcoded strings.</p>
+    <p><strong>Repair</strong> is conditional. If automatic navigation is live, this is small: set <code>firstSelectedGameObject</code> per screen so focus starts somewhere sane, and fix gaps where geometric neighbour-finding produces a poor order. The runtime-instantiated result thumbnails are the likeliest gap — they are created fresh on every query, so whatever <code>PopulateDatabaseList()</code> builds must be made navigable as it is built. If navigation turns out to be disabled outright, this grows into enabling and wiring it explicitly across each screen.</p>
+    <p>Either way the mod does not own a cursor. Unity keeps driving selection; we observe, repair, and speak. That avoids the failure mode where a parallel cursor and the game's own selection disagree.</p>
+
+    <div class="finding">
+      <p class="tag">Built and verified</p>
+      <h3>What Phase 02 actually found</h3>
+      <p>The open question is settled: <strong>result thumbnails are not <code>Selectable</code>s at all</strong>. <code>PopulateDatabaseList()</code> instantiates each tile from <code>imageBoxPrefab</code> and attaches only a <code>ClickyBox</code> — no <code>Button</code>, no <code>Selectable</code>, no <code>onClick</code>. Keyboard navigation could not reach a search result by any route. Repair was therefore construction, not adjustment, though only for this one control.</p>
+      <p>Elsewhere the optimistic reading held. A live <code>StandaloneInputModule</code> runs with <code>sendNavigationEvents</code> on and every shipped <code>Selectable</code> set to <code>navigation.Automatic</code>. Nothing needed enabling; <code>firstSelectedGameObject</code> is simply never set, so focus started nowhere until the mod seeded it.</p>
+      <p>The build adds a bare <code>Selectable</code> per tile with explicit left/right links — geometric neighbour-finding is unreliable across the clipped scroll viewport — and activates through <code>ClickyBox.JustBeenClicked()</code>, since there is no <code>onClick</code> to invoke. Confirmed in play: <code>result 1 of 4, new, 11 seconds</code> followed by the clip's opening line.</p>
+      <p>Two defects surfaced in that same session and were fixed. Tab order was sorted purely by screen geometry, which placed the results panel after the toolbar and so skipped past the results the announcement had just pointed the player at; it is now banded — search box, results, everything else. And closing a clip left selection on an internal video object, which a patch on <code>ShutDetailText</code> now returns to the result the player opened.</p>
+      <p>A later session exercised the <strong>five-result cap</strong> — 137 entries matched, capped at five, all five reachable and separately labelled — and surfaced two further defects, both since fixed. <code>SaveLoad.Load()</code> reopens the last-viewed clip to restore a session, which the mod announced as though the player had opened it, so a returning player heard a clip summary before reaching the title screen; the restore is now bracketed and stays silent. And the all-caps softening turned the cap message into Title Case while leaving short words shouting — "Access Limited TO First 5 Entries" — because it worked word by word; it now treats a run of shouted words as one sentence, and leaves isolated acronyms alone.</p>
+      <p><strong>Two verbosity questions are deliberately left open</strong>, because they are judgment calls that only sustained play can settle, and the log is a poor instrument for them — repetition reads worse written down than it sounds:</p>
+      <ul>
+        <li>Moving off a result and back re-announces it in full. Correct behaviour on arrival; possibly wearing on a round trip.</li>
+        <li>The "3 of 7" group counts shift as panels open and close, because they are counted per parent. Accurate each time, but the same control can be "1 of 7" and then "3 of 7" within seconds.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase"><span class="num">03</span><h2>Search and results</h2></div>
+  <p class="goal">Goal: the core loop — type, hear what came back, choose a clip — works by ear.</p>
+  <div class="body">
+    <p>The search box is the most-used control in the game, and free text entry is the whole mechanic: you hear a name in a clip, then type it. So it needs real screen-reader text-entry behaviour — echo characters as typed and words on space, announce the field and its contents on focus, read back the current text on demand, and speak deletions by naming the character removed rather than falling silent.</p>
+    <p><code>InputField.KeyPressed</code> is the chokepoint every keystroke passes through, including backspace and caret movement, which makes it the right hook. The game's own <code>InputValidate.checkChar</code> sees insertions only, so it is not sufficient alone.</p>
+    <p><strong>Two parts of this phase already shipped in Phase 02</strong>, because they fell out of patching <code>PopulateDatabaseList()</code> for navigation. The query outcome is announced — the game's own <code>summaryText</code> carries the entry count and the access cap, so the mod speaks that rather than recomputing it, which keeps the cap phrased as the game's rule. And each result already has a spoken identity from <code>ClipLibrary</code>: position, watched state, duration, and an opening line of real transcript. The cap wording remains unverified in play, per the Phase 02 note above.</p>
+    <p>What is left is the search box itself, and the normalisation announcement below.</p>
+    <p>One game-specific subtlety: the search normalises input before matching — <code>CheckAmerican()</code> rewrites US spellings to UK, and quoted queries switch to exact-match. On a zero-result search a blind player cannot tell a typo from a genuinely absent word, so the mod announces the <em>normalised</em> query — what the game actually searched for — turning a dead end into information.</p>
+
+    <div class="finding">
+      <p class="tag">Built</p>
+      <h3>What Phase 03 actually found</h3>
+      <p><code>InputField.KeyPressed</code> was the right hook, but it is <strong>protected</strong> in the Unity 5.0.1 UI assembly, and its <code>EditState</code> return type is a non-public nested enum this mod cannot name. The patch therefore resolves the target through <code>AccessTools</code> rather than by attribute, and ignores <code>__result</code> entirely — it reads the field's state afterwards instead, which is the thing we actually care about. <code>caretPosition</code> is protected on this version too (the public property came later), so the caret is read from the <code>m_CaretPosition</code> backing field through a cached <code>FieldInfo</code>; if that ever fails to resolve, the cost is caret reporting alone and the rest of the echo survives.</p>
+      <p>The echo never interprets the keystroke. It snapshots the field's text and caret, and diffs successive snapshots by matching the unchanged text at each end — which is what lets a single hook cover insertion, backspace, forward-delete, paste and caret movement without a branch per key. Multi-character changes are read as text rather than spelled out, since those are pastes; single characters are echoed, buffered into a word, and the whole word spoken again at the space that ends it.</p>
+      <p>That snapshot has to be re-baselined wherever the game writes the field behind our back, and it does so in two places worth naming. <code>RunQuery</code> strips newlines from the field on every submit, and <code>SaveLoad.Load</code> refills it with the saved query on a restore. Left alone, either would leave a stale baseline and make the player's next real keypress announce as a bulk deletion — so both paths call <code>SearchBox.Sync</code>, the restore doing it from the existing finalizer that already unsets the silence flag.</p>
+      <p>The normalisation announcement needed a correction to the plan's premise. The normalised query is <strong>not</strong> readable off the database: <code>NewUIDatabase.searchString</code> is a field, but <code>RunQuery</code> is a UnityScript coroutine and keeps the normalised value in a local of its generated state machine, never writing it back. The mod recomputes it by calling the game's own public <code>CheckAmerican</code>, which is also the more truthful route — if the spelling tables change, the announcement follows them. Case-only differences are deliberately not reported, since <code>CheckAmerican</code> lower-cases everything and would otherwise fire on virtually every search; only a genuine spelling substitution, or the quoted exact-match switch, is worth a player's attention.</p>
+      <p><strong>Not yet verified in play.</strong> The build is clean and the patch is checked at startup, but the echo's feel — particularly whether per-character speech outpaces fast typing, and whether the word-on-space repeat is confirmation or clutter — is exactly the kind of judgment the log cannot settle. It needs a session.</p>
+    </div>
+  </div>
+
+  <div class="phase"><span class="num">04</span><h2>Playback</h2></div>
+  <p class="goal">Goal: clips are watchable, and captions are available for anyone who needs them.</p>
+  <div class="body">
+    <p>The clips are speech, so audio mostly carries itself. The mod announces playback start and end, and supports interrupting a clip. Because <code>ClipDetail</code> already tracks caption position against playback time, an optional spoken-caption mode is nearly free — valuable for deafblind players on a braille display, and for anyone who misses a line.</p>
+    <p>A "read full transcript" key exposes the whole clip as text on demand, independent of playback — the single most useful affordance for a game built on re-reading testimony for detail. <strong>This shipped early, in Phase 02, as Ctrl+T.</strong></p>
+
+    <div class="finding">
+      <p class="tag">Built</p>
+      <h3>What Phase 04 actually found</h3>
+      <p>The caption mechanism is better than this plan assumed, and the difference changed the design. <code>ClipDetail.Update()</code> does not merely track caption position — it owns a cursor, <code>subtitlePosition</code>, which it advances by two through a <code>subtitleArray</code> of alternating text and end-time pairs, comparing each end time against <code>PositionSeconds</code> from the movie instance. So the mod runs <strong>no clock of its own</strong>: it watches that cursor and speaks when it moves. This is what makes scrubbing work for free — dragging the video slider resets the cursor to zero, and a parallel timer would have drifted out of step with the picture at exactly the moment the player was hunting for a line.</p>
+      <p>Everything needed here is public, which is a change from Phase 03. <code>NowPlayTheVideo</code>, <code>AbortTheVideo</code>, <code>PlayerCancels</code> and the fields behind them are all reachable by ordinary attribute patching. <code>PlayTheVideo</code> is a one-line delegate to <code>NowPlayTheVideo</code>, so the latter is the hook — it is the point every route into playback passes through.</p>
+      <p>Ending a clip needed one piece of care. Both exits — the clip finishing and the player stopping it — funnel into <code>AbortTheVideo</code>, which cannot tell them apart, so the mod brackets <code>PlayerCancels</code> to mark the cancel path. The distinction is worth the trouble twice over: it is a different thing to hear, and the game scores the two differently, awarding half credit for a cancel. That scoring is also why the stop key routes through <code>PlayerCancels</code> rather than reaching past it to the abort — a keyboard player stopping a clip should score exactly what a mouse player does.</p>
+      <p><strong>Spoken captions are off by default</strong>, which is a deliberate reversal of the plan's framing. The clips are speech; captions spoken over them are two voices at once, and unusable as a default. They stay valuable for the cases the plan named — a braille display, or a player who wants the text — but those are choices only the player can make. The "I missed that line" case is served separately by Ctrl+K, which re-reads the caption on screen whether or not continuous captions are switched on, and is most useful precisely to the player who does not want them.</p>
+      <p>One data detail worth recording: <code>FillDetails</code> appends a <code>"% %9999"</code> sentinel before splitting, giving the game's walk a final entry no playback position can pass. Read back naively that speaks as "9999", so the caption reader skips it.</p>
+      <p><strong>Not yet verified in play</strong>, in the same state Phase 03 is in. The specific risk here is the interaction the log cannot show: captions and the search-box echo share one speech channel, and how they behave together — along with whether per-character echo keeps up with fast typing — is what the next session needs to settle. The caption path speaks through a single call site, so rate-limiting can be added in one place if it turns out to need it.</p>
+    </div>
+  </div>
+
+  <div class="phase"><span class="num">05</span><h2>Orientation</h2></div>
+  <p class="goal">Goal: the player can hold the investigation in their head.</p>
+  <div class="body">
+    <p>Sighted players keep bearings through persistent on-screen state: search history in the sidebar, tagged clips, thumbnails on the desktop. Without that, a blind player has to carry it all in memory — so this phase makes that state queryable rather than remembered.</p>
+    <p>Review keys report the current query and result count, walk the search history, list tagged clips, and give progress against the 271 total. This is what turns a technically operable game into a playable one, and it is the phase most likely to need revision after real testing.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Key map</h2>
+  <p>Modelled on screen-reader conventions the target audience already knows, and chosen to avoid the game's own bindings — the search field swallows most plain keys, so review commands sit behind a modifier.</p>
+  <h3>Implemented as of Phase 04</h3>
+  <div class="keys">
+    <div class="keyrow"><kbd>↑ ↓ ← →</kbd><span>Move focus — Unity's own navigation, which this build repairs rather than replaces</span></div>
+    <div class="keyrow"><kbd>Tab / Shift+Tab</kbd><span>Walk focus linearly: search box, then results, then everything else</span></div>
+    <div class="keyrow"><kbd>Space</kbd><span>Activate focused element</span></div>
+    <div class="keyrow"><kbd>Enter</kbd><span>Activate a focused result; submits the query when the search box has focus</span></div>
+    <div class="keyrow"><kbd>Ctrl + R</kbd><span>Re-announce the focused element</span></div>
+    <div class="keyrow"><kbd>Ctrl + Shift + R</kbd><span>Repeat the last stored utterance (transcripts and captions)</span></div>
+    <div class="keyrow"><kbd>Ctrl + T</kbd><span>Read the focused clip's full transcript</span></div>
+    <div class="keyrow"><kbd>Ctrl + Q</kbd><span>Report current query and result count</span></div>
+    <div class="keyrow"><kbd>Ctrl + E</kbd><span>Read the search box back in full, with its length</span></div>
+    <div class="keyrow"><kbd>Esc</kbd><span>Stop a playing clip — unmodified, and inert unless something is playing</span></div>
+    <div class="keyrow"><kbd>Ctrl + J</kbd><span>Toggle spoken captions (off by default)</span></div>
+    <div class="keyrow"><kbd>Ctrl + K</kbd><span>Re-read the caption on screen now, captions on or off</span></div>
+    <div class="keyrow"><kbd>Ctrl + P</kbd><span>Report progress — clips seen of 271</span></div>
+  </div>
+  <h3>Still to build</h3>
+  <div class="keys">
+    <div class="keyrow"><kbd>Ctrl</kbd><span>Interrupt speech</span></div>
+    <div class="keyrow"><kbd>Ctrl + H</kbd><span>Walk search history</span></div>
+  </div>
+  <div class="finding">
+    <p class="tag">Corrected</p>
+    <h3>The caption toggle is Ctrl+J, not Ctrl+C</h3>
+    <p>Unity's <code>InputField.KeyPressed</code> consumes <strong>Ctrl+A, C, V and X</strong> for clipboard work — confirmed in the IL, which switches on character codes 97–99 and 118–120. The search box holds focus for most of the game, so the Ctrl+C this plan originally specified would have toggled captions every time the player copied their query, and copied at the same time. The mnemonic is worse; the collision is disqualifying.</p>
+    <p><code>Esc</code> survived the same check. The field does handle it — setting <code>wasCanceled</code> and ending editing — but a clip can only play while the detail panel is up, not the search box, so the two uses cannot both be live. The mod also leaves the key alone unless something is actually playing.</p>
+  </div>
+  <div class="finding">
+    <p class="tag">Observed</p>
+    <h3>Space activates buttons, and it is the reliable key</h3>
+    <p>Unity binds its <code>Submit</code> button to <strong>both Enter and Space</strong> by default, and in play it was Space that got the player off the title screen. This is worth stating explicitly because the plan originally listed only Enter, and a player who tries Enter alone on a screen where the game has not wired it may conclude the mod is broken.</p>
+    <p>It is also useful evidence: Space reaching <code>Submit</code> confirms the <code>StandaloneInputModule</code> is routing button events through the normal path, independently of the mod. Enter is additionally intercepted by the game's own <code>InputValidate.CheckSubmit</code> on the search field, which is why the two keys do not behave identically everywhere.</p>
+  </div>
+  <p>Key map and verbosity belong in a config file so they can be changed without a rebuild — screen-reader users often have strong, well-founded preferences here. Speech rate is left to the player's own screen reader, which already has their preferred settings. Note that MelonLoader's own preferences system is the component whose net35 build fails on this runtime, so this needs either the patched Tomlet or a config path of the mod's own.</p>
+</section>
+
+<section>
+  <h2>Risks</h2>
+  <div class="risk">
+    <div>
+      <b>Phase 02's size is still unknown</b>
+      <p>How much navigation this game actually uses decides whether Phase 02 is repair or construction, and only a running build can say. Mitigated by making that survey part of Phase 01, before any of Phase 02 is designed in detail — and by the fact that labelling, the larger half, is required either way.</p>
+    </div>
+    <div>
+      <b>Dynamic result thumbnails are the likeliest gap</b>
+      <p>Results are instantiated fresh on every query in <code>PopulateDatabaseList()</code>, and were only ever wired for mouse clicks. If they carry no navigation, they must be made focusable as they are built — on the exact code path the core loop runs through most often. Mitigated by patching that method directly, where the objects are created and their clip index is already in hand.</p>
+    </div>
+    <div>
+      <b>Compiled UnityScript is awkward to patch</b>
+      <p>Coroutines become generated state-machine classes with mangled names that are brittle to target directly. Mitigated by patching only stable public entry points — <code>MyButtonPressed()</code>, <code>PopulateDatabaseList()</code>, <code>FillDetails()</code> — and never the generated internals.</p>
+    </div>
+    <div>
+      <b>Speech and captions can collide</b>
+      <p>Caption output during playback will fight result announcements without an explicit priority policy. Mitigated by the interrupt-versus-append distinction, decided centrally in <code>Narrator</code> rather than ad hoc at each call site. The library's duplicate-suppression window helps but does not solve ordering.</p>
+    </div>
+    <div>
+      <b>Static analysis has already misled us twice</b>
+      <p>Two confident conclusions from reading files — "no keyboard handling" and "no input module in the scene" — were both wrong, because I searched one assembly and generalised, then used a string test that could not have found what it was looking for. Mitigated by treating the running game as the authority from Phase 01 onward, and by holding claims about engine behaviour provisional until observed.</p>
+    </div>
+    <div>
+      <b>Only real users can judge the result</b>
+      <p>Phrasing, verbosity, and pacing are the difference between usable and exhausting, and they cannot be validated by reading code. The build order front-loads the core loop so there is something worth testing early, and verbosity is configurable rather than fixed.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Scope</h2>
+  <p>The mod ships as a single archive extracted over the game folder, with no game files altered. Windows only — <code>UniversalSpeech.dll</code> is a Windows library, and the game's video playback here is the Windows-specific AVPro path.</p>
+  <p>The one-step install survives the loader switch, for a reason that only becomes visible once the loader is patched: <strong>because this build modifies MelonLoader, it must distribute MelonLoader, so its installer is not used at all.</strong> Running the installer would place stock assemblies that then need overwriting with the patched ones — strictly worse than extracting the correct layout once. Bundling is the only sensible path, and bundling means extraction.</p>
+  <p>So the packaging argument that originally chose BepInEx holds here unchanged: one archive, extracted into the game folder, nothing to run first. That is still the most reliable install to describe in a readme and to follow with a screen reader.</p>
+  <p>Out of scope: translating the game, changing the search algorithm or the five-result cap, and re-encoding video. The mod makes the existing game reachable; it does not redesign it.</p>
+  <p><strong>We build no controller support.</strong> Her Story's core mechanic is typing arbitrary words into a search box — you hear a name and type it. A gamepad reaches that only through an on-screen keyboard, character by character, which is worse without sight rather than better. A keyboard is required to play regardless, so controller input could only ever supplement the non-typing parts. No work is spent on it.</p>
+  <p>The controller remains useful as a <em>queryable surface</em>, though, which is why Phase 01 logs it. Unity's navigation axes already accept gamepad input, so whatever a connected pad can drive, it drives through the same path we are inspecting. That makes it evidence about the input module rather than a feature to implement — and if gamepad navigation happens to work as a side effect, it works for free.</p>
+</section>
+
+<footer>
+  <p>Plan derived from decompiling <span class="mono">Assembly-UnityScript.dll</span> and <span class="mono">UnityEngine.UI.dll</span>, and inspecting the asset bundles, from the installed build at <span class="mono">D:\root\her story</span>.</p>
+  <p><strong>Revised 16 August 2026, after Phases 01 and 02 shipped.</strong> Sections marked <em>Superseded</em>, <em>Built and verified</em>, or <em>Observed</em> record what the running game actually showed, and take precedence over the surrounding prose where the two disagree. The original text is kept rather than rewritten, so the corrections stay legible as corrections — this plan has now been wrong about the loader, about keyboard handling, and about the input module, and each of those was caught only by running the thing.</p>
+</footer>
+
+</div>
