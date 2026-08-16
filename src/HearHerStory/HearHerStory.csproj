@@ -9,6 +9,8 @@
     <AssemblySearchPaths>$(AssemblySearchPaths);{RawFileName}</AssemblySearchPaths>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <Version>0.1.0</Version>
+    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+    <Copyright>Copyright (C) 2026 amock</Copyright>
     <DebugType>portable</DebugType>
     <NoWarn>$(NoWarn);CS0618</NoWarn>
   </PropertyGroup>
