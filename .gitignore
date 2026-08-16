@@ -7,16 +7,20 @@ obj/
 # not ours to redistribute. Populate lib/ from a local game install.
 lib/
 
-# Vendored upstream clones (~196 MB, each with its own .git).
-# Re-clone from source rather than tracking them here.
+# Vendored upstream clones, re-cloned only when an upstream PR needs work.
+# The branches live on the ObjectInSpace forks; see upstream-reports/*-pr.md
+# for the exact clone command.
 upstream-reports/repos/
 
 # Loader binaries: originals copied from a MelonLoader install plus the
 # patched outputs produced by loader-patch/PatchLoader.
 loader-patch/*.dll
 
-# Stale BepInEx-layout staging tree; the mod ships as a MelonLoader mod.
-dist/
+# Release staging. payload/ is ~19 MB of third-party binaries (MelonLoader,
+# the speech DLLs, the accessibility library) that we do not redistribute
+# through this repo; out/ is the built zips. See release/README.md to rebuild.
+release/payload/
+release/out/
 
 # Local editor/tooling state
 .claude/settings.local.json

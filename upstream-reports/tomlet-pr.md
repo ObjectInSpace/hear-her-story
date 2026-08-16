@@ -3,6 +3,12 @@
 **Repo:** https://github.com/SamboyCoding/Tomlet
 **Target branch:** `master`
 **PR title:** Resolve reflection lookups lazily so a failure can't poison the whole type
+**PR:** [SamboyCoding/Tomlet#63](https://github.com/SamboyCoding/Tomlet/pull/63) — opened 2026-08-16
+**Branch:** `lazy-reflection-lookups` on `ObjectInSpace/Tomlet` (pushed; nothing local-only)
+
+> The local clone was deleted on 2026-08-16 to reclaim 11 MB. To resume work if a
+> maintainer responds:
+> `gh repo clone ObjectInSpace/Tomlet -- -b lazy-reflection-lookups`
 
 > Commit message must NOT contain `[publish]` — their CI treats that as a NuGet release trigger.
 

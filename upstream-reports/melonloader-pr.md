@@ -3,6 +3,12 @@
 **Repo:** https://github.com/LavaGang/MelonLoader
 **Target branch:** `master`
 **PR title:** Guard `RegisterCallbacks()` so a failure can't abort melon registration silently
+**PR:** [LavaGang/MelonLoader#1195](https://github.com/LavaGang/MelonLoader/pull/1195) — opened 2026-08-16
+**Branch:** `guard-register-callbacks` on `ObjectInSpace/MelonLoader` (pushed; nothing local-only)
+
+> The local clone was deleted on 2026-08-16 to reclaim 808 MB. To resume work if a
+> maintainer responds:
+> `gh repo clone ObjectInSpace/MelonLoader -- -b guard-register-callbacks`
 
 > Submitted as a PR rather than an issue: `blank_issues_enabled: false`, and neither
 > issue template fits a code-level defect (the bug template requires end-user
