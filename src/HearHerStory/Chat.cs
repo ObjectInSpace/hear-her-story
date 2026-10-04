@@ -124,8 +124,20 @@ namespace HearHerStory
                 return false;
             }
 
-            var lines = OnScreenLines(box);
-            string text = Spoken(lines);
+            string text = Describe(box);
+
+            Speech.Remember(text);
+            Speech.Say(text, HhsTextType.Chat, true);
+            return true;
+        }
+
+        /// <summary>
+        /// The conversation so far, and what the game will accept next if it is
+        /// waiting. Also what the window says when it opens.
+        /// </summary>
+        internal static string Describe(ChatBox box)
+        {
+            string text = Spoken(OnScreenLines(box));
 
             if (text.Length == 0)
             {
@@ -137,9 +149,7 @@ namespace HearHerStory
                 text += " " + AnswerHint(box);
             }
 
-            Speech.Remember(text);
-            Speech.Say(text, HhsTextType.Chat, true);
-            return true;
+            return text;
         }
 
         /// <summary>
@@ -223,30 +233,20 @@ namespace HearHerStory
             var es = EventSystem.current;
             var current = es != null ? es.currentSelectedGameObject : null;
 
-            if (current == null)
+            if (current != null)
             {
-                return null;
+                var inside = current.GetComponentInParent<ChatBox>();
+                if (inside != null)
+                {
+                    return inside;
+                }
             }
 
-            var box = Owning(current.GetComponent<InputField>());
-            if (box != null)
-            {
-                return box;
-            }
-
-            // The button that calls SB back sits in the chat window too, and the
-            // conversation is just as worth reading from there.
-            box = current.GetComponentInParent<ChatBox>();
-            if (box != null)
-            {
-                return box;
-            }
-
-            box = UnityEngine.Object.FindObjectOfType<ChatBox>();
-            return box != null && box.myChatButton != null
-                   && box.myChatButton.gameObject == current
-                ? box
-                : null;
+            // While the chat is open it is the thing in front of the player
+            // wherever focus happens to sit: the game dims everything else
+            // behind it. FindObjectOfType only returns active objects, so this
+            // is null whenever the window is closed.
+            return UnityEngine.Object.FindObjectOfType<ChatBox>();
         }
 
         /// <summary>

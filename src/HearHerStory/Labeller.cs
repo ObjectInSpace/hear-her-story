@@ -545,6 +545,14 @@ namespace HearHerStory
                     continue;
                 }
 
+                // A word said twice in a row is a naming habit, not meaning:
+                // the chat icon is "icon CHAT CHAT", which read aloud as a stutter.
+                if (kept.Count > 0
+                    && string.Equals(kept[kept.Count - 1], trimmed, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
                 kept.Add(trimmed);
             }
 

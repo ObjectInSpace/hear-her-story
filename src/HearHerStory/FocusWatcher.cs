@@ -325,17 +325,31 @@ namespace HearHerStory
             // The element's own graphic. This is the common case: the game
             // fades a closed window's controls to alpha 0 and leaves them
             // active behind whatever is on top.
-            var graphic = s.GetComponent<Graphic>();
-            if (graphic != null && graphic.color.a <= 0.01f)
+            // A text field is seen by its text, not its box. The chat's answer
+            // field has a fully transparent background over visible text, and
+            // judging it by the background hid the one control the chat needs.
+            var input = s as InputField;
+            if (input != null && input.textComponent != null)
             {
-                return false;
+                if (input.textComponent.color.a <= 0.01f)
+                {
+                    return false;
+                }
             }
-
-            // A targetGraphic set to something other than the object itself,
-            // which is how the larger invisible hit-boxes are built.
-            if (s.targetGraphic != null && s.targetGraphic.color.a <= 0.01f)
+            else
             {
-                return false;
+                var graphic = s.GetComponent<Graphic>();
+                if (graphic != null && graphic.color.a <= 0.01f)
+                {
+                    return false;
+                }
+
+                // A targetGraphic set to something other than the object
+                // itself, which is how the larger invisible hit-boxes are built.
+                if (s.targetGraphic != null && s.targetGraphic.color.a <= 0.01f)
+                {
+                    return false;
+                }
             }
 
             var t = s.transform;
@@ -1339,6 +1353,14 @@ namespace HearHerStory
                 return clock;
             }
 
+            // The chat's raw text draws every speaker name twice, and says
+            // nothing of what the game will accept as an answer.
+            var chat = window != null ? window.GetComponentInChildren<ChatBox>() : null;
+            if (chat != null)
+            {
+                return Chat.Describe(chat);
+            }
+
             return FragmentTextOf(window);
         }
 
@@ -1501,6 +1523,28 @@ namespace HearHerStory
             yield return null;
 
             var after = WindowsOnScreen();
+
+            // Some panels open with a companion: the chat brings up a full-screen
+            // dimming layer alongside the window itself, and the layer comes
+            // first in the hierarchy. Taking the first new window landed on the
+            // layer — nothing to focus, nothing to read — and left the player
+            // outside the chat. A window with a control in it wins.
+            int preferred = -1;
+            for (int i = 0; i < after.Count; i++)
+            {
+                if (!before.Contains(after[i]) && FirstIn(after[i]) != null)
+                {
+                    preferred = i;
+                    break;
+                }
+            }
+
+            if (preferred > 0)
+            {
+                var swap = after[preferred];
+                after.RemoveAt(preferred);
+                after.Insert(0, swap);
+            }
 
             for (int i = 0; i < after.Count; i++)
             {
