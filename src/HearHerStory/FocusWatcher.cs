@@ -481,9 +481,15 @@ namespace HearHerStory
         // toolbar buttons, so Tab skipped past the results the announcement had
         // just told the player to go and read. Ordering by band first keeps the
         // walk in the order the player thinks in: type, then read what came back.
+        //
+        // Search box and results are the two places the game is actually played,
+        // so they come first and next to each other. Favourites are ClickyBox
+        // tiles too, and banding them with the results let the favourites strip
+        // win on screen position and sit between the two.
         private const int BandSearchBox = 0;
         private const int BandResults = 1;
-        private const int BandEverythingElse = 2;
+        private const int BandToolbar = 2;
+        private const int BandEverythingElse = 3;
 
         private static int Band(Selectable s)
         {
@@ -492,12 +498,115 @@ namespace HearHerStory
                 return BandSearchBox;
             }
 
-            if (s.GetComponent<ClickyBox>() != null)
+            if (IsSearchResult(s.gameObject))
             {
                 return BandResults;
             }
 
+            if (IsToolbar(s.transform))
+            {
+                return BandToolbar;
+            }
+
             return BandEverythingElse;
+        }
+
+        /// <summary>
+        /// A tile in the search results row, as opposed to the favourites strip,
+        /// which is built from the same ClickyBox prefab.
+        /// </summary>
+        internal static bool IsSearchResult(GameObject go)
+        {
+            var database = ClipLibrary.Database;
+
+            return go != null
+                   && database != null
+                   && database.panelParent != null
+                   && go.GetComponent<ClickyBox>() != null
+                   && go.transform.parent == database.panelParent.transform;
+        }
+
+        /// <summary>
+        /// The search, history and settings buttons, which share a parent with
+        /// the search box.
+        /// </summary>
+        private static bool IsToolbar(Transform t)
+        {
+            var box = SearchField();
+            return box != null && t != box.transform && t.parent == box.transform.parent;
+        }
+
+        private static InputField SearchField()
+        {
+            var database = ClipLibrary.Database;
+            return database != null ? database.myTextField : null;
+        }
+
+        /// <summary>
+        /// Moves from the search box into the results: the one the player was
+        /// last on if it is still there, otherwise the first. Returns false when
+        /// there are no results to go to.
+        /// </summary>
+        internal bool FocusResults()
+        {
+            var es = EventSystem.current;
+            var database = ClipLibrary.Database;
+
+            if (es == null || database == null || database.panelParent == null)
+            {
+                return false;
+            }
+
+            GameObject target = null;
+
+            if (_lastResult != null && _lastResult.activeInHierarchy && IsSearchResult(_lastResult))
+            {
+                target = _lastResult;
+            }
+            else
+            {
+                var panel = database.panelParent.transform;
+
+                for (int i = 0; i < panel.childCount; i++)
+                {
+                    var child = panel.GetChild(i).gameObject;
+                    var selectable = child.GetComponent<Selectable>();
+
+                    if (child.activeInHierarchy && selectable != null && IsSearchResult(child))
+                    {
+                        target = child;
+                        break;
+                    }
+                }
+            }
+
+            if (target == null)
+            {
+                return false;
+            }
+
+            // Always announced, even when it is the result the player left: they
+            // have changed place, and need to hear where they landed.
+            _lastSpoken = null;
+            es.SetSelectedGameObject(target);
+            return true;
+        }
+
+        /// <summary>
+        /// Returns to the search box from anywhere.
+        /// </summary>
+        internal void FocusSearchBox()
+        {
+            var es = EventSystem.current;
+            var box = SearchField();
+
+            if (es == null || box == null || !box.gameObject.activeInHierarchy)
+            {
+                return;
+            }
+
+            _lastSpoken = null;
+            es.SetSelectedGameObject(box.gameObject);
         }
 
         /// <summary>
@@ -618,7 +727,21 @@ namespace HearHerStory
         /// </summary>
         private static Transform Group(Transform t)
         {
-            return t != null ? t.parent : null;
+            if (t == null)
+            {
+                return null;
+            }
+
+            // The search box is a stop of its own rather than one member of the
+            // toolbar it is parented with, so Tab goes straight from it to the
+            // results instead of through three buttons first.
+            var box = SearchField();
+            if (box != null && t == box.transform)
+            {
+                return t;
+            }
+
+            return t.parent;
         }
 
         /// <summary>
@@ -732,9 +855,17 @@ namespace HearHerStory
                 // much is here to arrow through.
                 var go = scope[i].gameObject;
 
+                // The search box and the results name themselves — "Search
+                // box", "result 1 of 5" — so a group prefix there is clutter
+                // on the two stops the player passes most.
+                bool selfNamed = !byWindow
+                                 && (go.GetComponent<InputField>() != null || IsSearchResult(go));
+
                 Speech.Say(
-                    UnitName(target, byWindow) + ", " + size
-                    + (size == 1 ? " item. " : " items. ")
+                    (selfNamed
+                        ? string.Empty
+                        : UnitName(target, byWindow) + ", " + size
+                          + (size == 1 ? " item. " : " items. "))
                     + Labeller.Describe(go),
                     HhsTextType.Focus,
                     true);

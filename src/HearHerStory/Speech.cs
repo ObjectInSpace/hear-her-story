@@ -76,6 +76,9 @@ namespace HearHerStory
         /// a priority policy between them.
         /// </summary>
         internal const int Echo = TextType.CustomBase + 5;
+
+        /// <summary>A message in the end-game chat window, either side's.</summary>
+        internal const int Chat = TextType.CustomBase + 6;
     }
 
     /// <summary>
@@ -111,6 +114,7 @@ namespace HearHerStory
                 { HhsTextType.Caption, "Caption" },
                 { HhsTextType.Diagnostic, "Diagnostic" },
                 { HhsTextType.Echo, "Echo" },
+                { HhsTextType.Chat, "Chat" },
             };
 
             // The mod keeps its own repeat buffer — see Remember — so nothing

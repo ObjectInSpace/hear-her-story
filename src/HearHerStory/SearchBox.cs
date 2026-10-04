@@ -40,11 +40,32 @@ namespace HearHerStory
     /// </summary>
     internal static class SearchBox
     {
-        /// <summary>The field's contents as of the last keystroke we observed.</summary>
-        private static string _lastText = string.Empty;
+        /// <summary>
+        /// A field's contents and caret as of the last keystroke we observed.
+        /// Kept per field: the chat answer box echoes through here too, and a
+        /// single shared snapshot would have each field diffed against the
+        /// other's text.
+        /// </summary>
+        private sealed class Snapshot
+        {
+            internal string Text = string.Empty;
+            internal int Caret;
+        }
 
-        /// <summary>Caret position as of the last keystroke, for reporting movement.</summary>
-        private static int _lastCaret;
+        private static readonly System.Collections.Generic.Dictionary<InputField, Snapshot> Snapshots =
+            new System.Collections.Generic.Dictionary<InputField, Snapshot>();
+
+        private static Snapshot SnapshotOf(InputField field)
+        {
+            Snapshot snapshot;
+            if (!Snapshots.TryGetValue(field, out snapshot))
+            {
+                snapshot = new Snapshot();
+                Snapshots[field] = snapshot;
+            }
+
+            return snapshot;
+        }
 
         /// <summary>
         /// Unity 5.0.1 keeps <c>InputField.caretPosition</c> protected — the
@@ -86,11 +107,13 @@ namespace HearHerStory
             string now = field.text ?? string.Empty;
             int caret = Caret(field);
 
-            string before = _lastText;
-            int beforeCaret = _lastCaret;
+            var snapshot = SnapshotOf(field);
 
-            _lastText = now;
-            _lastCaret = caret;
+            string before = snapshot.Text;
+            int beforeCaret = snapshot.Caret;
+
+            snapshot.Text = now;
+            snapshot.Caret = caret;
 
             if (now == before)
             {
@@ -111,8 +134,14 @@ namespace HearHerStory
             }
             else
             {
-                AnnounceDeletion(before, now);
+                AnnounceDeletion(before, now, FieldName(field));
             }
+        }
+
+        /// <summary>What to call a field when saying it has been emptied.</summary>
+        private static string FieldName(InputField field)
+        {
+            return Chat.Owning(field) != null ? "Answer" : "Search box";
         }
 
         /// <summary>
@@ -146,13 +175,13 @@ namespace HearHerStory
         /// a field that falls silent on backspace leaves the player unable to
         /// tell a deletion from a key that did not register.
         /// </summary>
-        private static void AnnounceDeletion(string before, string now)
+        private static void AnnounceDeletion(string before, string now, string fieldName)
         {
             string removed = Removed(before, now);
 
             if (string.IsNullOrEmpty(now))
             {
-                Speech.Say("Search box empty.", HhsTextType.Echo);
+                Speech.Say(fieldName + " empty.", HhsTextType.Echo);
                 return;
             }
 
@@ -248,8 +277,14 @@ namespace HearHerStory
         /// </summary>
         internal static void Sync(InputField field)
         {
-            _lastText = field != null ? (field.text ?? string.Empty) : string.Empty;
-            _lastCaret = Caret(field);
+            if (field == null)
+            {
+                return;
+            }
+
+            var snapshot = SnapshotOf(field);
+            snapshot.Text = field.text ?? string.Empty;
+            snapshot.Caret = Caret(field);
         }
 
         /// <summary>
@@ -315,7 +350,7 @@ namespace HearHerStory
         /// have no pronunciation of their own, so they get named; letters and
         /// digits are spoken as themselves.
         /// </summary>
-        private static string SpeakChar(char c)
+        internal static string SpeakChar(char c)
         {
             switch (c)
             {

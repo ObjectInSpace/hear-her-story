@@ -106,6 +106,9 @@ namespace HearHerStory
                 new { Type = typeof(NewUIDatabase), Name = "FillFavorites" },
                 new { Type = typeof(ClipDetail), Name = "NowPlayTheVideo" },
                 new { Type = typeof(ClipDetail), Name = "AbortTheVideo" },
+                new { Type = typeof(ChatBox), Name = "AddText" },
+                new { Type = typeof(ChatBox), Name = "ValidateInput" },
+                new { Type = typeof(ChatBox), Name = "SubmitChat" },
             };
 
             foreach (var target in expected)

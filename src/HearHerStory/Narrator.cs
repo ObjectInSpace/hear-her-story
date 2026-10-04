@@ -51,7 +51,7 @@ namespace HearHerStory
 
             if (reachableResults > 0)
             {
-                sb.Append(" Press down arrow to reach the results.");
+                sb.Append(" Press down arrow to reach the results, and up arrow to come back.");
             }
             else
             {

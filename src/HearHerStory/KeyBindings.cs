@@ -54,6 +54,10 @@ namespace HearHerStory
             // player has switched captions on.
             Playback.Tick();
 
+            // Chat lines are gathered for a frame and spoken together, because
+            // the game draws one message as several wrapped lines.
+            Chat.Tick();
+
             // Three levels of movement, because the desktop has three: arrows
             // within a group, Tab between the groups of a window, Ctrl+Tab
             // between windows. The windows tile rather than stack and each holds
@@ -66,26 +70,45 @@ namespace HearHerStory
 
                 if (FocusWatcher.Instance != null)
                 {
+                    // The search box is a group of its own and ordered first,
+                    // with the results second and the toolbar third, so plain
+                    // group stepping gives the ring the game is played in:
+                    // Tab from the box lands on the results, Shift+Tab from the
+                    // results lands back in the box, and everything else
+                    // follows after.
                     if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
                     {
                         FocusWatcher.Instance.StepWindow(backwards ? -1 : 1);
-                    }
-                    else if (SearchBoxHasFocus())
-                    {
-                        // The toolbar shares a parent with the search field, so
-                        // Search, history and settings live in the same group as
-                        // the box itself. Group-stepping from there jumps over
-                        // all three, and the arrows that would reach them are
-                        // given to the text caret while the field has focus —
-                        // between them, the three buttons were unreachable in
-                        // practice despite being perfectly focusable. Tab out of
-                        // the field steps within the group instead.
-                        FocusWatcher.Instance.StepWithinGroup(backwards ? -1 : 1, true);
                     }
                     else
                     {
                         FocusWatcher.Instance.StepGroup(backwards ? -1 : 1);
                     }
+                }
+
+                return;
+            }
+
+            // Down from the search box goes to the results, and Up from a result
+            // comes back. These are the two moves the whole game is made of, so
+            // they get a key each way rather than a walk. Down is free to take in
+            // the box: the field is single-line, so up and down have no caret
+            // work to do there, while left and right stay with the caret.
+            if (Input.GetKeyDown(KeyCode.DownArrow) && RealSearchBoxHasFocus())
+            {
+                if (FocusWatcher.Instance != null && !FocusWatcher.Instance.FocusResults())
+                {
+                    Speech.Say("No results yet. Type a search and press Enter.", HhsTextType.Focus, true);
+                }
+
+                return;
+            }
+
+            if (Input.GetKeyDown(KeyCode.UpArrow) && FocusWatcher.IsSearchResult(Focused()))
+            {
+                if (FocusWatcher.Instance != null)
+                {
+                    FocusWatcher.Instance.FocusSearchBox();
                 }
 
                 return;
@@ -237,6 +260,13 @@ namespace HearHerStory
         /// </summary>
         private void ReadTranscript()
         {
+            // In the chat window the thing in front of the player is the
+            // conversation, and the answers it will accept.
+            if (Chat.ReadConversation())
+            {
+                return;
+            }
+
             int index = CurrentClipIndex();
 
             if (index >= 0)
@@ -372,10 +402,30 @@ namespace HearHerStory
         /// </summary>
         private static bool SearchBoxHasFocus()
         {
-            var es = EventSystem.current;
-            var current = es != null ? es.currentSelectedGameObject : null;
+            var current = Focused();
 
             return current != null && current.GetComponent<InputField>() != null;
+        }
+
+        /// <summary>
+        /// True only for the game's search field — not the chat answer box or
+        /// the clip tag box, which are text fields too but lead nowhere.
+        /// </summary>
+        private static bool RealSearchBoxHasFocus()
+        {
+            var database = ClipLibrary.Database;
+            var current = Focused();
+
+            return current != null
+                   && database != null
+                   && database.myTextField != null
+                   && current == database.myTextField.gameObject;
+        }
+
+        private static GameObject Focused()
+        {
+            var es = EventSystem.current;
+            return es != null ? es.currentSelectedGameObject : null;
         }
 
     }

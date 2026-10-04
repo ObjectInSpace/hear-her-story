@@ -90,6 +90,12 @@ namespace HearHerStory
                     return SearchBox.DescribeOnFocus(input);
                 }
 
+                var chat = Chat.Owning(input);
+                if (chat != null)
+                {
+                    return Chat.DescribeOnFocus(chat, input);
+                }
+
                 // The clip's tag box. Without naming it, Name() would fall
                 // through to using the field's contents as its label — so an
                 // untagged clip announced as "BLANK, text field" (the game's own

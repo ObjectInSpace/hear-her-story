@@ -544,15 +544,27 @@ namespace HearHerStory
             return AccessTools.Method(typeof(InputField), "KeyPressed");
         }
 
-        private static void Postfix(InputField __instance)
+        private static void Postfix(InputField __instance, Event evt)
         {
             try
             {
-                // Only the search box. The game has a second field for user tags,
-                // and echoing every keystroke of both would be noise the moment
-                // focus is anywhere else.
+                // Up and down leave the field — KeyBindings uses them to move
+                // between the search box and the results — but the field still
+                // jumps its caret to an end on the way out. Echoing that would
+                // read a stray character over the focus announcement.
+                if (evt != null && (evt.keyCode == KeyCode.UpArrow || evt.keyCode == KeyCode.DownArrow))
+                {
+                    SearchBox.Sync(__instance);
+                    return;
+                }
+
+                // The search box and the chat's answer box. The game has a third
+                // field for user tags, and echoing every keystroke of that too
+                // would be noise the moment focus is anywhere else.
                 var database = ClipLibrary.Database;
-                if (database == null || __instance != database.myTextField)
+                bool isSearch = database != null && __instance == database.myTextField;
+
+                if (!isSearch && Chat.Owning(__instance) == null)
                 {
                     return;
                 }
@@ -672,6 +684,83 @@ namespace HearHerStory
                 if (Plugin.Log != null)
                 {
                     Plugin.Log.Error("AbortTheVideo patch failed: " + ex);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Speaks the chat. Every line the other side sends, every line the player
+    /// sends, and the hang-up all pass through AddText; ReloadAddText, which a
+    /// save restore uses to redraw an old conversation, deliberately does not
+    /// and stays silent.
+    /// </summary>
+    [HarmonyPatch(typeof(ChatBox), "AddText")]
+    internal static class ChatAddTextPatch
+    {
+        private static void Postfix(ChatBox __instance, string text)
+        {
+            try
+            {
+                Chat.Line(__instance, text);
+            }
+            catch (Exception ex)
+            {
+                if (Plugin.Log != null)
+                {
+                    Plugin.Log.Error("ChatBox.AddText patch failed: " + ex);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Explains a key the answer box refused. ValidateInput returns a null
+    /// character for anything that does not continue an accepted answer, and
+    /// the field then does nothing at all — no sound, no text — so without
+    /// this the player cannot tell a refused key from a broken keyboard.
+    /// </summary>
+    [HarmonyPatch(typeof(ChatBox), "ValidateInput")]
+    internal static class ChatValidateInputPatch
+    {
+        private static void Postfix(ChatBox __instance, string text, char addedChar, char __result)
+        {
+            try
+            {
+                if (__result == '\0')
+                {
+                    Chat.Rejected(__instance, text, addedChar);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (Plugin.Log != null)
+                {
+                    Plugin.Log.Error("ChatBox.ValidateInput patch failed: " + ex);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Re-baselines the answer box after sending. SubmitChat clears the field
+    /// directly, and the next keystroke would otherwise be diffed against the
+    /// answer just sent and announced as deleting it.
+    /// </summary>
+    [HarmonyPatch(typeof(ChatBox), "SubmitChat")]
+    internal static class ChatSubmitPatch
+    {
+        private static void Postfix(ChatBox __instance)
+        {
+            try
+            {
+                SearchBox.Sync(__instance.myInputField);
+            }
+            catch (Exception ex)
+            {
+                if (Plugin.Log != null)
+                {
+                    Plugin.Log.Error("ChatBox.SubmitChat patch failed: " + ex);
                 }
             }
         }
